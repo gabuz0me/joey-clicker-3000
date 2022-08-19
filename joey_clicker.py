@@ -19,10 +19,10 @@ class Clicker(Thread):
         # doubleclick won't trigger and additional click
         time.sleep(self.period)
         while self.master.isRunning:
-                mouse.click(Button.left)
-                self.master.clickCounter += 1
-                if verbose: print("Click")
-                time.sleep(self.period)
+            mouse.click(Button.left)
+            self.master.clickCounter += 1
+            if verbose: print("Click")
+            time.sleep(self.period)
     
 
 class KeyboardListener(Thread):
@@ -77,7 +77,7 @@ class JoeyClicker3000(tk.Tk):
     @property
     def clickPeriod(self):
         """Seconds"""
-        return int(60 / self.cpm)
+        return 60 / self.cpm
 
     @property
     def cpm(self):
@@ -88,7 +88,9 @@ class JoeyClicker3000(tk.Tk):
         self._cpm.set(cpm)
 
     @property
-    def clickCounter(self): return self._clickCounter
+    def clickCounter(self):
+        return self._clickCounter
+
     @clickCounter.setter
     def clickCounter(self, value):
         self._clickCounter = value
@@ -120,6 +122,7 @@ class JoeyClicker3000(tk.Tk):
     def onExit(self):
         self.listener.stop()
         self.destroy()
+
 
 if __name__ == '__main__':
     jc = JoeyClicker3000()
