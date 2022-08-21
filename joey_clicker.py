@@ -1,4 +1,4 @@
-#! /usr/bin/python
+#!/usr/bin/env python3
 import time
 import tkinter as tk
 from tkinter import messagebox
@@ -133,7 +133,7 @@ class JoeyClicker3000(tk.Tk):
 
     def updateClickLabel(self):
         v = self._clickCounter
-        self.clickLabel.config(text=f"{v} click{'' if v<=1 else 's'} so far !", font=("default", 12))
+        self.clickLabel.config(text=f"{v} click{'' if v<=1 else 's'} so far!", font=("default", 12))
 
     def onExit(self):
         self.listener.stop()
