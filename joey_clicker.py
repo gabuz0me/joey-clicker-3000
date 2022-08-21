@@ -1,11 +1,12 @@
 #! /usr/bin/python
 import time
 import tkinter as tk
+from tkinter import messagebox
 from threading import Thread
 from pynput.mouse import Controller, Button
 from pynput import keyboard
 
-verbose = True
+verbose = False
 
 class Clicker(Thread):
     def __init__(self, master, period):
@@ -47,26 +48,31 @@ class KeyboardListener(Thread):
 class JoeyClicker3000(tk.Tk):
     def __init__(self, cpm = 60, shortcut = "<ctrl>+<shift>+j", **kwargs):
         tk.Tk.__init__(self, **kwargs)
-
+        self.name = "Joey Clicker 3000"
         self.isRunning = False
-        self._cpm = tk.IntVar(self, cpm)
         self.shortcut = shortcut
         self._clickCounter = 0
 
-        self.title("Joey Clicker 3000")
+        self.title(self.name)
         mainFrame=tk.Frame(self)
         mainFrame.pack()
-        tk.Label(mainFrame, text="Joey Clicker 3000", font=("default", 25)).pack()
+        tk.Label(mainFrame, text=self.name, font=("default", 25)).pack()
+
         cpmFrame=tk.Frame(mainFrame)
         cpmFrame.pack()
         tk.Label(cpmFrame, text="Clicks Per Minute (CPM):").pack(side='left')
-        self.cpmEntry = tk.Entry(cpmFrame, textvariable=self._cpm)
+        vcmd = (self.register(self.isEntryValid), '%P')
+        self.cpmEntry = tk.Entry(cpmFrame, validate='key', validatecommand=vcmd)
         self.cpmEntry.pack(side='right')
+        self.cpm = cpm
         self.button = tk.Button(mainFrame, command=lambda:self.switchState())
         self.button.pack()
+
         tk.Label(mainFrame, text=f"(or press \"{shortcut}\" to start/stop)", font=("default", 8)).pack()
         self.clickLabel = tk.Label(mainFrame)
         self.clickLabel.pack()
+
+        self.resizable(False, False)
 
         self.updateButtonStyle()
         self.updateClickLabel()
@@ -74,21 +80,25 @@ class JoeyClicker3000(tk.Tk):
         self.listener = KeyboardListener(self, shortcut)
         self.protocol("WM_DELETE_WINDOW", lambda:self.onExit())
 
+    def isEntryValid(self, P):
+        return not P or P.isdigit() # and int(P) > 0
+
     @property
-    def clickPeriod(self):
+    def clickPeriod(self) -> float:
         """Seconds"""
         return 60 / self.cpm
 
     @property
-    def cpm(self):
-        return self._cpm.get()
+    def cpm(self) -> int:
+        return int(self.cpmEntry.get())
 
     @cpm.setter
-    def cpm(self, cpm):
-        self._cpm.set(cpm)
+    def cpm(self, cpm:int):
+        self.cpmEntry.delete(0, tk.END)
+        self.cpmEntry.insert(0, cpm)
 
     @property
-    def clickCounter(self):
+    def clickCounter(self) -> int:
         return self._clickCounter
 
     @clickCounter.setter
@@ -97,6 +107,12 @@ class JoeyClicker3000(tk.Tk):
         self.updateClickLabel()
 
     def switchState(self):
+        try:
+            cp = self.clickPeriod
+        except:
+            messagebox.showerror(self.name, "Invalid CPM")
+            return
+
         if self.isRunning:
             if verbose: print("Stop")
             self.cpmEntry.configure(state='normal')
@@ -106,7 +122,7 @@ class JoeyClicker3000(tk.Tk):
             self.cpmEntry.configure(state='disabled')
             self.isRunning = True
             self.clickCounter = 0
-            Clicker(self, self.clickPeriod)
+            Clicker(self, cp)
         self.updateButtonStyle()
 
     def updateButtonStyle(self):
