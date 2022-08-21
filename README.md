@@ -17,20 +17,20 @@ This tool requires [**Python 3**](https://www.python.org/) and the packages **tk
 $ path/to/python -m pip install pynput
 ```
 
-Then clone this repo or download `joey_clicker.py` and you're ready to click dementedly.
+Then clone this repo or download `joey_clicker_3000.py` and you're ready to click dementedly.
 
 ## Running
 
-To execute this simple but astonishing tool, just launch `joey_clicker.py` from a terminal:
+To execute this simple but astonishing tool, just launch `joey_clicker_3000.py` from a terminal:
 
 ### On Linux
 
 ```sh
-$ ./joey_clicker.py
+$ ./joey_clicker_3000.py
 ```
 
 ### On Windows
 
 ```bash
-> path/to/python joey_clicker.py
+> path/to/python joey_clicker_3000.py
 ```
